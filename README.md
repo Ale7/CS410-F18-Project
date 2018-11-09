@@ -1,14 +1,12 @@
 # CS410-F18-Project
 Java application for managing grades in a class.
 
-Files:
+**Files:**
 
-CS 410 F18 Project.pdf - Project specification
+- CS 410 F18 Project.pdf - Project specification
+- Data Model.xml - E-R model created with draw.io
+- README.md - this file
 
-Data Model.xml - E-R model created with draw.io
+**Links:**
 
-README.md - this file
-
-Links:
-
-[Draw.io](https://www.draw.io/)
+- [Draw.io](https://www.draw.io/)
