@@ -10,3 +10,5 @@ Java application for managing grades in a class.
 **Links:**
 
 - [Draw.io](https://www.draw.io/)
+- [Setup Help](https://piazza.com/class/jklmc1eezwn1mp?cid=39)
+
