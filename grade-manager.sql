@@ -1,58 +1,68 @@
 CREATE DATABASE IF NOT EXISTS grade-manager;
 USE grade-manager;
 
-CREATE TABLE donor (
-  donor_id INTEGER PRIMARY KEY AUTO_INCREMENT,
-  donor_name VARCHAR(500) NOT NULL,
-  donor_email VARCHAR(200) NOT NULL,
-  donor_address VARCHAR(200) NOT NULL,
-  donor_city VARCHAR(100) NOT NULL,
-  donor_state VARCHAR(20) NOT NULL,
-  donor_zip VARCHAR(10) NOT NULL
+CREATE TABLE class (
+  class_id INTEGER PRIMARY KEY AUTO_INCREMENT,
+  class_course_num INTEGER(10) NOT NULL,
+  class_term VARCHAR(20) NOT NULL,
+  class_year INTEGER(4) NOT NULL,
+  class_section_num INTEGER(10) NOT NULL
 );
 
-CREATE TABLE fund (
-  fund_id INTEGER PRIMARY KEY AUTO_INCREMENT,
-  fund_name VARCHAR(50) NOT NULL
+CREATE TABLE student (
+  student_id INTEGER PRIMARY KEY AUTO_INCREMENT,
+  student_username VARCHAR(100) NOT NULL,
+  student_name VARCHAR(100) NOT NULL
 );
 
-CREATE TABLE gift (
-  gift_id INTEGER PRIMARY KEY AUTO_INCREMENT,
-  donor_id INTEGER NOT NULL,
-  gift_date DATE NOT NULL,
+CREATE TABLE grade (
+  grade_score INTEGER(10) NOT NULL
 
-  FOREIGN KEY (donor_id) REFERENCES donor (donor_id),
-  INDEX (donor_id)
+  PRIMARY KEY (student_id, item_id)
+
+  FOREIGN KEY (grade_id) REFERENCES item (item_id)
 );
 
-CREATE TABLE gift_fund_allocation (
-  gf_alloc_id INTEGER PRIMARY KEY AUTO_INCREMENT,
-  gift_id INTEGER NOT NULL REFERENCES gift,
-  fund_id INTEGER NOT NULL REFERENCES fund,
-  amount DECIMAL NOT NULL,
+CREATE TABLE student_enrolls_class (
+  student_id INTEGER NOT NULL REFERENCES student (student_id),
+  class_id INTEGER NOT NULL REFERENCES class (class_id)
 
-  FOREIGN KEY (gift_id) REFERENCES gift (gift_id),
-  FOREIGN KEY (fund_id) REFERENCES fund (fund_id),
-  INDEX (gift_id),
-  INDEX (fund_id)
+  PRIMARY KEY (student_id, class_id)
 );
 
--- BEGIN TABLE donor
-INSERT INTO donor (donor_name, donor_email, donor_address, donor_city, donor_state, donor_zip) values ('George Coleman', 'gcoleman0@narod.ru', '80042 Manley Lane', 'Greenfield', 'MA', '48913-8689');
-INSERT INTO donor (donor_name, donor_email, donor_address, donor_city, donor_state, donor_zip) values ('Todd Burton', 'tburton1@xing.com', '35476 Lawn Pass', 'Huntington', 'IN', '51288');
-INSERT INTO donor (donor_name, donor_email, donor_address, donor_city, donor_state, donor_zip) values ('Melissa Gibson', 'mgibson2@dailymail.co.uk', '43 Spohn Terrace', 'Modesto', 'CA', '17566-6735');
+CREATE TABLE item (
+  item_id INTEGER PRIMARY KEY AUTO_INCREMENT,
+  item_point_value INTEGER(10) NOT NULL,
+  item_description TEXT NOT NULL,
+  item_name VARCHAR(100) NOT NULL
 
--- BEGIN TABLE fund
-INSERT INTO fund (fund_name) VALUES ('General / Operations');
-INSERT INTO fund (fund_name) VALUES ('Cat Sheltering');
-INSERT INTO fund (fund_name) VALUES ('Dog Sheltering');
+  FOREIGN KEY (item_id) REFERENCES category (category_id)
+);
 
--- BEGIN TABLE gift
-INSERT INTO gift (gift_id, donor_id, gift_date) VALUES (935, 1, '2009-10-06');
-INSERT INTO gift (gift_id, donor_id, gift_date) VALUES (936, 1, '2010-01-19');
-INSERT INTO gift (gift_id, donor_id, gift_date) VALUES (937, 1, '2005-06-01');
+CREATE TABLE category (
+  category_id INTEGER PRIMARY KEY AUTO_INCREMENT,
+  category_name VARCHAR(100) NOT NULL,
+  category_weight INTEGER(10) NOT NULL
 
--- BEGIN TABLE gift_fund_allocation
-INSERT INTO gift_fund_allocation (gf_alloc_id, gift_id, fund_id, amount) VALUES (2045, 935, 1, 204);
-INSERT INTO gift_fund_allocation (gf_alloc_id, gift_id, fund_id, amount) VALUES (2046, 936, 1, 845);
-INSERT INTO gift_fund_allocation (gf_alloc_id, gift_id, fund_id, amount) VALUES (2047, 936, 2, 966);
+  FOREIGN KEY (category_id) REFERENCES class (class_id)
+
+  UNIQUE (category_name, class_id)
+);
+
+-- BEGIN TABLE class
+INSERT INTO class (class_course_num, class_term, class_year, class_section_num) VALUES ('309', 'Spring', '2014', '2');
+
+-- BEGIN TABLE student
+INSERT INTO student (student_username, student_name) VALUES ('alec22', 'Alec Wooding');
+
+-- BEGIN TABLE grade
+INSERT INTO grade (grade_score) VALUES ('90');
+
+-- BEGIN TABLE student_enrolls_class
+-- INSERT INTO student_enrolls_class (_, _) VALUES (' ', ' ');
+
+-- BEGIN TABLE item
+INSERT INTO item (item_point_value, item_description, item_name) VALUES ('100', 'First Assignment', 'Assignment_1');
+
+-- BEGIN TABLE category
+INSERT INTO category (category_name, category_weight) VALUES ('Homework', '20');
