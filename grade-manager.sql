@@ -26,7 +26,7 @@ CREATE TABLE item (
 );
 
 CREATE TABLE student (
-  student_id SERIAL PRIMARY KEY,
+  student_id INTEGER PRIMARY KEY,
   student_username VARCHAR(100) NOT NULL,
   student_name VARCHAR(100) NOT NULL
 );
