@@ -23,6 +23,26 @@ public class GradeBookShell {
     }
     
     @Command
+    public void newClass(String courseNum, String term, int year, int section, String courseDescription) throws SQLException
+    {
+    	String query =
+    			  "INSERT INTO course (course_class_num, course_term, course_year, course_section_num, course_description) "
+    			+ "VALUES (?, ?, ?, ?, ?) ";
+    	
+    	try (PreparedStatement stmt = db.prepareStatement(query)) {
+    		stmt.setString(1, courseNum);
+    		stmt.setString(2, term);
+    		stmt.setInt(3, year);
+    		stmt.setInt(4, section);
+    		stmt.setString(5, courseDescription);
+    		
+    		stmt.execute();
+    	}
+    	
+    }
+    
+    
+    @Command
     public void findDonor(String name) throws SQLException
     {
     	
