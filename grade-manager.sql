@@ -3,7 +3,8 @@ CREATE TABLE course (
   course_class_num INTEGER NOT NULL,
   course_term VARCHAR(20) NOT NULL,
   course_year INTEGER NOT NULL,
-  course_section_num INTEGER NOT NULL
+  course_section_num INTEGER NOT NULL,
+  course_description VARCHAR(100) NOT NULL
 );
 
 CREATE TABLE category (
