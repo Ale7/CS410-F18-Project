@@ -41,13 +41,6 @@ public class GradeBookShell {
     	
     }
     
-    
-    @Command
-    public void findDonor(String name) throws SQLException
-    {
-    	
-    }
-    
     @Command
     public void addStudent(String username, int studentid, String name) throws SQLException
     {
@@ -63,7 +56,7 @@ public class GradeBookShell {
     }
     
     @Command
-    public void studentReport() throws SQLException
+    public void showStudents() throws SQLException
     {    	
     	String query =
   			  "SELECT s.student_id, s.student_username, s.student_name "
@@ -81,10 +74,5 @@ public class GradeBookShell {
     		}
     	}
     }
-    
-    @Command
-    public void topDonors(int year) throws SQLException
-    {
-    	
-    }
+
 }
