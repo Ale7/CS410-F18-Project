@@ -109,16 +109,16 @@ public class GradeBookShell {
     			"INSERT INTO student_enrolls_course (student_id, course_id) VALUES (?, ?)";
       	
       	try (PreparedStatement stmt = db.prepareStatement(insert)) {
-      			stmt.setInt(1, studentid);
-      			stmt.setString(2, username);
-      			stmt.setString(3, name);
-      			stmt.execute();
+      		stmt.setInt(1, studentid);
+      		stmt.setString(2, username);
+      		stmt.setString(3, name);
+      		stmt.execute();
       	}
       	
       	try (PreparedStatement stmt = db.prepareStatement(insert2)) {
-      			stmt.setInt(1,  studentid);
-      			stmt.setInt(2,  selectedClassID);
-      			stmt.execute();
+      		stmt.setInt(1,  studentid);
+      		stmt.setInt(2,  selectedClassID);
+      		stmt.execute();
       	}
     }
     
@@ -132,9 +132,12 @@ public class GradeBookShell {
     {    	
     	String query =
   			  "SELECT s.student_id, s.student_username, s.student_name "
-  			+ "FROM student s ";
+  			+ "FROM student s "
+  			+ "JOIN student_enrolls_course sec ON s.student_id = sec.student_id "
+  			+ "WHERE sec.course_id = ?";
     	
     	try (PreparedStatement stmt = db.prepareStatement(query)) {
+    		stmt.setInt(1, selectedClassID);
     		try (ResultSet rs = stmt.executeQuery()) {
     			System.out.println("STUDENTS:\n");
     			while (rs.next()) {
