@@ -105,11 +105,19 @@ public class GradeBookShell {
     {
     	String insert =
     			"INSERT INTO student (student_id, student_username, student_name) VALUES (?, ?, ?)";
+    	String insert2 =
+    			"INSERT INTO student_enrolls_course (student_id, course_id) VALUES (?, ?)";
       	
       	try (PreparedStatement stmt = db.prepareStatement(insert)) {
       			stmt.setInt(1, studentid);
       			stmt.setString(2, username);
       			stmt.setString(3, name);
+      			stmt.execute();
+      	}
+      	
+      	try (PreparedStatement stmt = db.prepareStatement(insert2)) {
+      			stmt.setInt(1,  studentid);
+      			stmt.setInt(2,  selectedClassID);
       			stmt.execute();
       	}
     }
