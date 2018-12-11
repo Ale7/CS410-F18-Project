@@ -83,8 +83,50 @@ public class GradeBookShell {
     		stmt.setInt(4, section);
     		
     		try(ResultSet rs = stmt.executeQuery()) {
-    			while(rs.next()) {
+    			if (rs.next()) {
     				selectedClassID = rs.getInt("course_id");
+    				System.out.println("Class successfully selected.\n\n");
+    			}
+    		}
+    	}
+    	
+    	//System.out.println("The currently selected class is ID: " + selectedClassID); //For Testing
+    }
+    
+    /**
+     * Selects a class with the specified criteria
+     * 
+     * @param courseNum - course number, EX: CS410
+     * @param term - the term of the course, EX: Spring
+     * @param year - year of the course, EX: 2015
+     * @throws SQLException
+     */
+    @Command
+    public void selectClass(String courseNum, String term, int year) throws SQLException
+    {
+    	//Example: select-class cs444 Spring 2018
+    	String query =
+    			  "SELECT c.course_id "
+    			+ "FROM course c "
+    			+ "WHERE c.course_class_num = ? "
+    			+ "AND c.course_term = ? "
+    			+ "AND c.course_year = ? "; 
+    	
+    	try (PreparedStatement stmt = db.prepareStatement(query)) {
+    		stmt.setString(1, courseNum);
+    		stmt.setString(2, term);
+    		stmt.setInt(3, year);
+    		    		
+    		try(ResultSet rs = stmt.executeQuery()) { 
+    			
+    			if(rs.next()) {
+    				int tempHolder = rs.getInt("course_id");
+    				if (!rs.next()){
+    					selectedClassID = tempHolder;
+    					System.out.println("Class successfully selected.\n\n");
+    				} else {
+    					System.out.println("There are multiple sections with the given criteria. Please specify a section.\n");
+    				}
     			}
     		}
     	}
