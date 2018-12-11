@@ -55,7 +55,7 @@ public class GradeBookShell {
     }
     
     /**
-     * Adds a student 
+     * Adds a student to the currently active class
      * 
      * @param username - username of student, EX: Alecw2938
      * @param studentid - student id, EX: 0239931782
@@ -77,7 +77,7 @@ public class GradeBookShell {
     }
     
     /**
-     * Prints all stored students
+     * Prints all stored students from the currently active class
      * 
      * @throws SQLException
      */
@@ -102,7 +102,8 @@ public class GradeBookShell {
     }
     
     /**
-     * Prints all stored students where the provided string is found in name or username
+     * Prints all stored students where the provided string is found in 
+     * name or username from the currently active class
      * 
      * @param match - the string to match
      * @throws SQLException
