@@ -49,7 +49,6 @@ public class GradeBookShell {
     		stmt.setInt(3, year);
     		stmt.setInt(4, section);
     		stmt.setString(5, courseDescription);
-    		
     		stmt.execute();
     	}
     	
@@ -94,6 +93,39 @@ public class GradeBookShell {
     	}
     	
     	//System.out.println("The currently selected class is ID: " + selectedClassID); //For Testing
+    }
+    
+    
+    /**
+     * Prints the currently selected class.
+     * 
+     * @throws SQLException
+     */
+    @Command
+    public void showClass() throws SQLException
+    {
+    	String query =
+    			  "SELECT * "
+    			+ "FROM course c "
+    			+ "WHERE c.course_id = ?"; 
+    	
+    	try (PreparedStatement stmt = db.prepareStatement(query)) {
+    		stmt.setInt(1, selectedClassID);
+    		
+    		try (ResultSet rs = stmt.executeQuery()) {
+    			System.out.println("Currently active class:\n");
+    			
+    			while (rs.next()) {
+    				String course_class_num = rs.getString("course_class_num");
+    				String course_term = rs.getString("course_term");
+    				int course_year = rs.getInt("course_year");
+    				int course_section_num = rs.getInt("course_section_num");
+    				String course_description = rs.getString("course_description");
+    				System.out.format("%-15s%-15s%-15d%-15d%-15s\n", course_class_num,
+    								  course_term, course_year, course_section_num, course_description);
+    			}
+    		}
+    	}
     }
     
     /**
@@ -142,8 +174,10 @@ public class GradeBookShell {
     	
     	try (PreparedStatement stmt = db.prepareStatement(query)) {
     		stmt.setInt(1, selectedClassID);
+    		
     		try (ResultSet rs = stmt.executeQuery()) {
     			System.out.println("STUDENTS:\n");
+    			
     			while (rs.next()) {
     				int student_id = rs.getInt("student_id");
     				String student_username = rs.getString("student_username");
@@ -176,8 +210,10 @@ public class GradeBookShell {
       		stmt.setInt(1, selectedClassID);
       		stmt.setString(2, match);
       		stmt.setString(3, match);
+      		
       		try (ResultSet rs = stmt.executeQuery()) {
       			System.out.println("STUDENTS:\n");
+      			
       			while (rs.next()) {
       				int student_id = rs.getInt("student_id");
       				String student_username = rs.getString("student_username");
