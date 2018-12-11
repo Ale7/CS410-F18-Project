@@ -113,8 +113,8 @@ public class GradeBookShell {
     	String query =
     			  "SELECT s.student_id, s.student_username, s.student_name "
     			+ "FROM student s "
-    			+ "WHERE s.student_name LIKE ('%' || ? || '%') OR "
-    			+ "WHERE s.student_username LIKE ('%' || ? || '%') ";
+    			+ "WHERE (s.student_name LIKE ('%' || ? || '%') "
+    			+ "OR s.student_username LIKE ('%' || ? || '%'))";
       	
       	try (PreparedStatement stmt = db.prepareStatement(query)) {
       		stmt.setString(1, match);
