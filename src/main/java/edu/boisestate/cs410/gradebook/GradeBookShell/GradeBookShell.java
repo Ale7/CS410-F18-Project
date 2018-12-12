@@ -56,13 +56,10 @@ public class GradeBookShell {
     }
     
     /**
-     * Create a new class
+     * Adds a category to the currently selected class
      * 
-     * @param courseNum - course number, EX: CS410
-     * @param term - the term of the course, EX: Spring
-     * @param year - year of the course, EX: 2015
-     * @param section - section # of course, EX: 2
-     * @param courseDescription - short description of course, EX: "Databases"
+     * @param name - category name, EX: Homework
+     * @param weight - int value of the weight of the category, EX: 15
      * @throws SQLException
      */
     @Command
@@ -85,6 +82,62 @@ public class GradeBookShell {
     		//System.out.println("Debug: Category added.");
     	}
     	
+    }
+    
+    /**
+     * Adds a category to the currently selected class
+     * 
+     * @param name - item, EX: Assignment1
+     * @param category - the category the item falls under
+     * @param description - description of the assignment, EX: practice basic math
+     * @param points - int value of the total possible points, EX: 100
+     * @throws SQLException
+     */
+    @Command
+    public void addItem(String name, String category, String description, int points) throws SQLException
+    {
+    	int category_id = 0;
+    	
+    	if (selectedClassID == 0) {
+    		System.out.println("You do not currently have a selected class. One needs to be selected before adding a category.\n");
+    		return;
+    	}
+    	
+    	String query = 
+    			"SELECT category_id "
+    		  + "FROM category "
+    		  + "WHERE category_name = ? AND course_id = ? ";
+    	
+    	//Get the category_id
+    	try (PreparedStatement qry = db.prepareStatement(query)) {
+    		qry.setString(1, category);
+    		qry.setInt(2, selectedClassID);
+    		
+    		try(ResultSet rs = qry.executeQuery()) { 
+    			if(rs.next()) {
+    				category_id = rs.getInt("category_id");
+    			}
+    		}
+    	}
+    	
+    	if (category_id == 0) {
+    		System.out.println("Could not find the specified category for the currently selected class. Are you sure it exists?\n");
+    		return;
+    	}
+    	
+    	String insert =
+    			  "INSERT INTO item (item_name, category_id, item_description, item_point_value) "
+    			+ "VALUES (?, ?, ?, ?)";
+    	
+    	try (PreparedStatement stmt = db.prepareStatement(insert)) {
+    		stmt.setString(1, name);
+    		stmt.setInt(2, category_id);
+    		stmt.setString(3, description);
+    		stmt.setInt(4, points);
+    		stmt.execute();
+    		//System.out.println("Debug: Item added.");
+    	}
+    
     }
     
     /**
@@ -117,7 +170,7 @@ public class GradeBookShell {
     				int tempHolder = rs.getInt("course_id");
     				if (!rs.next()){
     					selectedClassID = tempHolder;
-    					System.out.println("Class successfully selected.\n\n");
+    					System.out.println("Class successfully selected.\n");
     				} else {
     					System.out.println("There are multiple sections with the given criteria. Please specify a section.\n");
     				}
