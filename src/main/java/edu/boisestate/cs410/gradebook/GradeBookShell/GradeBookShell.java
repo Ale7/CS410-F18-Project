@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.sql.*;
 
 /*
+ * @authors Alec Wooding and Brandon Barker
  * Simple Java application for managing grades in a class. Command shell uses Cliche.
  */
 public class GradeBookShell {
@@ -50,6 +51,38 @@ public class GradeBookShell {
     		stmt.setInt(4, section);
     		stmt.setString(5, courseDescription);
     		stmt.execute();
+    	}
+    	
+    }
+    
+    /**
+     * Create a new class
+     * 
+     * @param courseNum - course number, EX: CS410
+     * @param term - the term of the course, EX: Spring
+     * @param year - year of the course, EX: 2015
+     * @param section - section # of course, EX: 2
+     * @param courseDescription - short description of course, EX: "Databases"
+     * @throws SQLException
+     */
+    @Command
+    public void addCategory(String name, int weight) throws SQLException
+    {
+    	if (selectedClassID == 0) {
+    		System.out.println("You do not currently have a selected class. One needs to be selected before adding a category.");
+    		return;
+    	}
+    	
+    	String insert =
+    			  "INSERT INTO category (category_name, category_weight, course_id) "
+    			+ "VALUES (?, ?, ? )";
+    	
+    	try (PreparedStatement stmt = db.prepareStatement(insert)) {
+    		stmt.setString(1, name);
+    		stmt.setInt(2, weight);
+    		stmt.setInt(3, selectedClassID);
+    		stmt.execute();
+    		//System.out.println("Debug: Category added.");
     	}
     	
     }
