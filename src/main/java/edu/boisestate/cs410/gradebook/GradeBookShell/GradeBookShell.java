@@ -56,13 +56,10 @@ public class GradeBookShell {
     }
     
     /**
-     * Create a new class
+     * Adds a new category to the currently selected class
      * 
-     * @param courseNum - course number, EX: CS410
-     * @param term - the term of the course, EX: Spring
-     * @param year - year of the course, EX: 2015
-     * @param section - section # of course, EX: 2
-     * @param courseDescription - short description of course, EX: "Databases"
+     * @param name - category name, EX: Homework
+     * @param weight - category weight 
      * @throws SQLException
      */
     @Command
@@ -85,6 +82,35 @@ public class GradeBookShell {
     		//System.out.println("Debug: Category added.");
     	}
     	
+    }
+    
+    /**
+     * Prints all categories from the currently selected class
+     * 
+     * @throws SQLException
+     */
+    @Command
+    public void showCategories() throws SQLException
+    {    	
+    	String query =
+  			  "SELECT * "
+  			+ "FROM category cat "
+  			+ "JOIN course c ON cat.course_id = c.course_id "
+  			+ "WHERE c.course_id = ?";
+    	
+    	try (PreparedStatement stmt = db.prepareStatement(query)) {
+    		stmt.setInt(1, selectedClassID);
+    		
+    		try (ResultSet rs = stmt.executeQuery()) {
+    			System.out.println("CATEGORIES:\n");
+    			
+    			while (rs.next()) {
+    				String category_name = rs.getString("category_name");
+    				int category_weight = rs.getInt("category_weight");
+    				System.out.format("%-15s%-15d\n", category_name, category_weight);
+    			}
+    		}
+    	}
     }
     
     /**
