@@ -170,6 +170,39 @@ public class GradeBookShell {
     }
     
     /**
+     * Prints all items from the currently selected class, grouped by category
+     * 
+     * @throws SQLException
+     */
+    @Command
+    public void showItems() throws SQLException
+    {    	
+    	String query =
+  			  "SELECT * "
+  			+ "FROM item i "
+  			+ "JOIN category cat ON i.category_id = cat.category_id "
+  			+ "JOIN course c ON cat.course_id = c.course_id "
+  			+ "WHERE c.course_id = ? "
+  			+ "ORDER BY cat.category_id";
+    	
+    	try (PreparedStatement stmt = db.prepareStatement(query)) {
+    		stmt.setInt(1, selectedClassID);
+    		
+    		try (ResultSet rs = stmt.executeQuery()) {
+    			System.out.println("ITEMS:\n");
+    			
+    			while (rs.next()) {
+    				String category_name = rs.getString("category_name");
+    				String item_name = rs.getString("item_name");
+    				String item_description = rs.getString("item_description");
+    				int item_point_value = rs.getInt("item_point_value");
+    				System.out.format("%-15s%-15s%-15s%-15d\n", category_name, item_name, item_description, item_point_value);
+    			}
+    		}
+    	}
+    }
+    
+    /**
      * Selects a class with the specified criteria
      * 
      * @param courseNum - course number, EX: CS410
