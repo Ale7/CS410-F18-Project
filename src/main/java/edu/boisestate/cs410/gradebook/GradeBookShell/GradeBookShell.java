@@ -7,12 +7,14 @@ import java.io.IOException;
 import java.sql.*;
 
 /*
- * @authors Alec Wooding and Brandon Barker
- * Simple Java application for managing grades in a class. Command shell uses Cliche.
+ * @author Alec Wooding
+ * @author Brandon Barker
+ * 
+ * Simple Java application for managing grades in a class, command shell uses Cliche
  */
 public class GradeBookShell {
     private final Connection db;
-    public int selectedClassID;
+    public int selectedClassID; //course_id of the currently active/selected class
 
     public GradeBookShell(Connection cxn) {
         db = cxn;
@@ -59,7 +61,7 @@ public class GradeBookShell {
      * Adds a category to the currently selected class
      * 
      * @param name - category name, EX: Homework
-     * @param weight - int value of the weight of the category, EX: 15
+     * @param weight - value of the weight of the category, EX: 15
      * @throws SQLException
      */
     @Command
@@ -72,7 +74,7 @@ public class GradeBookShell {
     	
     	String insert =
     			  "INSERT INTO category (category_name, category_weight, course_id) "
-    			+ "VALUES (?, ?, ? )";
+    			+ "VALUES (?, ?, ?)";
     	
     	try (PreparedStatement stmt = db.prepareStatement(insert)) {
     		stmt.setString(1, name);
@@ -109,12 +111,14 @@ public class GradeBookShell {
     				int category_weight = rs.getInt("category_weight");
     				System.out.format("%-15s%-15d\n", category_name, category_weight);
     			}
+    			
     		}
+    		
     	}
+    	
     }
 
-    	
-     /* Adds a category to the currently selected class
+    /** Adds a category to the currently selected class
      * 
      * @param name - item, EX: Assignment1
      * @param category - the category the item falls under
@@ -198,8 +202,11 @@ public class GradeBookShell {
     				int item_point_value = rs.getInt("item_point_value");
     				System.out.format("%-15s%-15s%-15s%-15d\n", category_name, item_name, item_description, item_point_value);
     			}
+    			
     		}
+    		
     	}
+    	
     }
     
     /**
@@ -237,12 +244,12 @@ public class GradeBookShell {
     					System.out.println("There are multiple sections with the given criteria. Please specify a section.\n");
     				}
     			}
+    			
     		}
+    		
     	}
-    	
     	//System.out.println("The currently selected class is ID: " + selectedClassID); //For Testing
     }
-    
     
     /**
      * Prints the currently selected class.
@@ -272,8 +279,11 @@ public class GradeBookShell {
     				System.out.format("%-15s%-15s%-15d%-15d%-15s\n", course_class_num,
     								  course_term, course_year, course_section_num, course_description);
     			}
+    			
     		}
+    		
     	}
+    	
     }
     
     /**
@@ -304,6 +314,7 @@ public class GradeBookShell {
       		stmt.setInt(2,  selectedClassID);
       		stmt.execute();
       	}
+      	
     }
     
     /**
@@ -332,8 +343,11 @@ public class GradeBookShell {
     				String student_name = rs.getString("student_name");
     				System.out.format("%-15d%-15s%-15s\n", student_id, student_username, student_name);
     			}
+    			
     		}
+    		
     	}
+    	
     }
     
     /**
@@ -368,8 +382,11 @@ public class GradeBookShell {
       				String student_name = rs.getString("student_name");
       				System.out.format("%-15d%-15s%-15s\n", student_id, student_username, student_name);
       			}
+      			
       		}
+      		
       	}
+      	
     }
 
 }
