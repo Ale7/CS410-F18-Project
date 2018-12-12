@@ -33,8 +33,8 @@ public class GradeBookShell {
      * Create a new class
      * 
      * @param courseNum - course number, EX: CS410
-     * @param term - the term of the course, EX: Spring
-     * @param year - year of the course, EX: 2015
+     * @param term - the term of the course, EX: Fall
+     * @param year - year of the course, EX: 2018
      * @param section - section # of course, EX: 2
      * @param courseDescription - short description of course, EX: "Databases"
      * @throws SQLException
@@ -42,6 +42,7 @@ public class GradeBookShell {
     @Command
     public void newClass(String courseNum, String term, int year, int section, String courseDescription) throws SQLException
     {
+    	//Example: new-class CS410 Fall 2018 2 "Databases"
     	String insert =
     			  "INSERT INTO course (course_class_num, course_term, course_year, course_section_num, course_description) "
     			+ "VALUES (?, ?, ?, ?, ?) ";
@@ -61,7 +62,7 @@ public class GradeBookShell {
      * Adds a category to the currently selected class
      * 
      * @param name - category name, EX: Homework
-     * @param weight - value of the weight of the category, EX: 15
+     * @param weight - value of the weight of the category, EX: 20
      * @throws SQLException
      */
     @Command
@@ -72,6 +73,7 @@ public class GradeBookShell {
     		return;
     	}
     	
+    	//Example: add-category "Homework" 20
     	String insert =
     			  "INSERT INTO category (category_name, category_weight, course_id) "
     			+ "VALUES (?, ?, ?)";
@@ -94,6 +96,7 @@ public class GradeBookShell {
     @Command
     public void showCategories() throws SQLException
     {    	
+    	//Example: show-categories
     	String query =
   			  "SELECT * "
   			+ "FROM category cat "
@@ -118,12 +121,13 @@ public class GradeBookShell {
     	
     }
 
-    /** Adds a category to the currently selected class
+    /** 
+     * Adds a category to the currently selected class
      * 
-     * @param name - item, EX: Assignment1
-     * @param category - the category the item falls under
-     * @param description - description of the assignment, EX: practice basic math
-     * @param points - int value of the total possible points, EX: 100
+     * @param name - item, EX: HW3
+     * @param category - the category the item falls under, EX: "Homework"
+     * @param description - description of the assignment, EX: "Practice Queries"
+     * @param points - value of the total possible points, EX: 40
      * @throws SQLException
      */
     @Command
@@ -136,6 +140,7 @@ public class GradeBookShell {
     		return;
     	}
     	
+    	//Example: add-item HW3 "Homework" "Practice Queries" 40
     	String query = 
     			"SELECT category_id "
     		  + "FROM category "
@@ -181,6 +186,7 @@ public class GradeBookShell {
     @Command
     public void showItems() throws SQLException
     {    	
+    	//Example: show-items
     	String query =
   			  "SELECT * "
   			+ "FROM item i "
@@ -219,7 +225,7 @@ public class GradeBookShell {
     @Command
     public void selectClass(String courseNum) throws SQLException
     {
-    	//Example: select-class cs444 
+    	//Example: select-class CS410 
     	String query =
     			  "SELECT c.course_id, c.course_year, c.course_term "
     			+ "FROM course c "
@@ -263,14 +269,14 @@ public class GradeBookShell {
      * Selects a class with the specified criteria
      * 
      * @param courseNum - course number, EX: CS410
-     * @param term - the term of the course, EX: Spring
-     * @param year - year of the course, EX: 2015
+     * @param term - the term of the course, EX: Fall
+     * @param year - year of the course, EX: 2018
      * @throws SQLException
      */
     @Command
     public void selectClass(String courseNum, String term, int year) throws SQLException
     {
-    	//Example: select-class cs444 Spring 2018
+    	//Example: select-class CS410 Fall 2018
     	String query =
     			  "SELECT c.course_id "
     			+ "FROM course c "
@@ -305,15 +311,15 @@ public class GradeBookShell {
      * Selects a class with the specified criteria
      * 
      * @param courseNum - course number, EX: CS410
-     * @param term - the term of the course, EX: Spring
-     * @param year - year of the course, EX: 2015
+     * @param term - the term of the course, EX: Fall
+     * @param year - year of the course, EX: 2018
      * @param section - section # of course, EX: 2
      * @throws SQLException
      */
     @Command
     public void selectClass(String courseNum, String term, int year, int section) throws SQLException
     {
-    	//Example: select-class cs444 Spring 2018 1
+    	//Example: select-class CS410 Fall 2018 2
     	String query =
     			  "SELECT c.course_id "
     			+ "FROM course c "
@@ -349,6 +355,7 @@ public class GradeBookShell {
     @Command
     public void showClass() throws SQLException
     {
+    	//Example: show-class
     	String query =
     			  "SELECT * "
     			+ "FROM course c "
@@ -379,14 +386,15 @@ public class GradeBookShell {
     /**
      * Adds a student to the currently active class
      * 
-     * @param username - username of student, EX: Alecw2938
-     * @param studentid - student id, EX: 0239931782
+     * @param username - username of student, EX: alecw2938
+     * @param studentid - student id, EX: 298342187
      * @param name - name of student, EX: "Wooding, Alec"
      * @throws SQLException
      */
     @Command
     public void addStudent(String username, int studentid, String name) throws SQLException
     {
+    	//Example: add-student alecw2938 298342187 "Wooding, Alec"
     	String insert =
     			"INSERT INTO student (student_id, student_username, student_name) VALUES (?, ?, ?)";
     	String insert2 =
@@ -415,6 +423,7 @@ public class GradeBookShell {
     @Command
     public void showStudents() throws SQLException
     {    	
+    	
     	String query =
   			  "SELECT s.student_id, s.student_username, s.student_name "
   			+ "FROM student s "
@@ -450,6 +459,7 @@ public class GradeBookShell {
     @Command
     public void showStudents(String match) throws SQLException
     {
+    	//Example: show-students
     	String query =
     			  "SELECT s.student_id, s.student_username, s.student_name "
     			+ "FROM student s "
@@ -479,11 +489,18 @@ public class GradeBookShell {
       	
     }
     
+    /**
+     * Prints the grades of a specified student of the currently select class
+     * 
+     * @param username - username of student, EX: alecw2938
+     * @throws SQLException
+     */
     @Command
     public void studentGrades(String username) throws SQLException
     {    	
+    	//Example: student-grades alecw2938
     	String query =
-  			  "SELECT DISTINCT i.item_name, i.item_description, i.item_point_value, g.grade_score "
+  			  "SELECT i.item_name, i.item_description, cat.category_name, i.item_point_value, g.grade_score "
   			+ "FROM item i "
   			+ "JOIN grade g ON i.item_id = g.item_id "
   			+ "JOIN category cat ON i.category_id = cat.category_id "
@@ -492,7 +509,8 @@ public class GradeBookShell {
 			+ "JOIN student s ON sec.student_id = s.student_id "
 			+ "JOIN student ON g.student_id = s.student_id "
   			+ "WHERE c.course_id = ? "
-			+ "AND s.student_username = ?";
+			+ "AND s.student_username = ? "
+  			+ "ORDER BY cat.category_id";
     	
     	try (PreparedStatement stmt = db.prepareStatement(query)) {
     		stmt.setInt(1, selectedClassID);
@@ -504,9 +522,10 @@ public class GradeBookShell {
     			while (rs.next()) {
     				String item_name = rs.getString("item_name");
     				String item_description = rs.getString("item_description");
+    				String category_name = rs.getString("category_name");
     				int item_point_value = rs.getInt("item_point_value");
     				int grade_score = rs.getInt("grade_score");
-    				System.out.format("%-15s%-15s%-15d%-15d\n", item_name, item_description, item_point_value, grade_score);
+    				System.out.format("%-15s%-15s%-15s%-15d%-15d\n", item_name, item_description, category_name, item_point_value, grade_score);
     			}
     			
     		}
