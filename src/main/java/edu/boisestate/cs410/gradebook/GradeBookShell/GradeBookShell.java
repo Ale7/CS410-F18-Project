@@ -478,5 +478,41 @@ public class GradeBookShell {
       	}
       	
     }
+    
+    @Command
+    public void studentGrades(String username) throws SQLException
+    {    	
+    	String query =
+  			  "SELECT DISTINCT i.item_name, i.item_description, i.item_point_value, g.grade_score "
+  			+ "FROM item i "
+  			+ "JOIN grade g ON i.item_id = g.item_id "
+  			+ "JOIN category cat ON i.category_id = cat.category_id "
+  			+ "JOIN course c ON cat.course_id = cat.category_id "
+			+ "JOIN student_enrolls_course sec ON c.course_id = sec.course_id "
+			+ "JOIN student s ON sec.student_id = s.student_id "
+			+ "JOIN student ON g.student_id = s.student_id "
+  			+ "WHERE c.course_id = ? "
+			+ "AND s.student_username = ?";
+    	
+    	try (PreparedStatement stmt = db.prepareStatement(query)) {
+    		stmt.setInt(1, selectedClassID);
+    		stmt.setString(2, username);
+    		
+    		try (ResultSet rs = stmt.executeQuery()) {
+    			System.out.println("GRADES:\n");
+    			
+    			while (rs.next()) {
+    				String item_name = rs.getString("item_name");
+    				String item_description = rs.getString("item_description");
+    				int item_point_value = rs.getInt("item_point_value");
+    				int grade_score = rs.getInt("grade_score");
+    				System.out.format("%-15s%-15s%-15d%-15d\n", item_name, item_description, item_point_value, grade_score);
+    			}
+    			
+    		}
+    		
+    	}
+    	
+    }
 
 }
