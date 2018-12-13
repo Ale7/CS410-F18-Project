@@ -533,5 +533,119 @@ public class GradeBookShell {
     	}
     	
     }
+    
+    /**
+     * Adds or updates a students grade for a specified item
+     * 
+     * @param itemname - the name of the item the grade is for, EX: Division Practice Assignment
+     * @param username - username of student, EX: alecw2938
+     * @param points - the number of points the student received, EX: 20
+     * @throws SQLException
+     */
+    @Command
+    public void grade(String itemname, String username, int points) throws SQLException
+    {    
+    	//Example: grade "Division Practice Assignment" alecw2938 20
+    	String query =
+  			  "SELECT g.grade_score, i.item_id, s.student_id "
+  			+ "FROM item i "
+  			+ "JOIN grade g ON i.item_id = g.item_id "
+			+ "JOIN student s ON g.student_id = s.student_id "
+			+ "WHERE i.item_name = ? "
+			+ "AND s.student_username = ? ";
+    	
+    	//Check if an entry for this item and student already exists.
+    	try (PreparedStatement stmt = db.prepareStatement(query)) {
+    		stmt.setString(1, itemname);
+    		stmt.setString(2, username);
+    		
+    		try (ResultSet rs = stmt.executeQuery()) {
+    			
+    			//If an entry already exists, we just need to update the point value.
+    			if (rs.next()) {
+    				int item_id = rs.getInt("item_id");
+    				int student_id = rs.getInt("student_id");
+    				
+    				String update =
+    					  "UPDATE grade "
+    					+ "SET grade_score = ? "
+    					+ "WHERE item_id = ? "
+    					+ "AND student_id = ?";
+    				
+    				try (PreparedStatement updt = db.prepareStatement(update)) {
+    					updt.setInt(1, points);
+    					updt.setInt(2, item_id);
+    					updt.setInt(3, student_id);
+    					    					
+    					updt.executeUpdate();
+    					return;
+    				}
+    				
+    				
+    			} else {
+    				//There was no entry, meaning we need to add the grade not just update it.
+    				int item_id;
+    				int student_id;
+    				
+    				String qryItemID = 
+    					  "SELECT item_id "
+    					+ "FROM item "
+    					+ "WHERE item_name = ? ";
+    				
+    				System.out.println("CHECK1");
+    				
+    				try (PreparedStatement itemIDStmt = db.prepareStatement(qryItemID)) {
+    					itemIDStmt.setString(1, itemname);
+    					System.out.println("CHECK2");
+    					
+    					try (ResultSet itemRS = itemIDStmt.executeQuery()) {
+    						
+    						System.out.println("CHECK3");
+    						if (itemRS.next()) {
+    							System.out.println("CHECK4");
+    							item_id = rs.getInt("item_id");
+    						} else {
+    							System.out.println("No item with the provided item name exists in the database.");
+    							return;
+    						}
+    					}
+    				}
+    				
+    				String qryStudentID = 
+      					  "SELECT student_id "
+      					+ "FROM student "
+      					+ "WHERE student_username = ? ";
+    				
+      				try (PreparedStatement studentIDStmt = db.prepareStatement(qryStudentID)) {
+      					studentIDStmt.setString(1, username);
+      					
+      					try (ResultSet studentRS = studentIDStmt.executeQuery()) {
+      						
+      						if (studentRS.next()) {
+      							student_id = rs.getInt("student_id");
+      						} else {
+      							System.out.println("No student with the provided username exists in the database.");
+      							return;
+      						}
+      					}
+      				}
+    				
+    				String insert = 
+    					  "INSERT INTO grade (grade_score, item_id, student_id) "
+    					+ "VALUES(?, ?, ?) ";
+    				
+    				try (PreparedStatement gradeStmt = db.prepareStatement(insert)) {
+    					gradeStmt.setInt(1, points);
+    					gradeStmt.setInt(2, item_id);
+    					gradeStmt.setInt(3, student_id);
+    				}
+    				
+    			}
+    			
+    		}
+    		
+    	}
+    	
+    }
 
 }
