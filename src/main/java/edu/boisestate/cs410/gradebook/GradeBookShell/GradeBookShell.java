@@ -501,23 +501,26 @@ public class GradeBookShell {
     	//Example: student-grades alecw2938
     	String query =
   			  "SELECT i.item_name, i.item_description, cat.category_name, i.item_point_value, g.grade_score "
-  			+ "FROM item i "
-  			+ "JOIN grade g ON i.item_id = g.item_id "
+  			+ "FROM grade g "
+  			+ "JOIN student s ON g.student_id = s.student_id "
+  			+ "JOIN item i ON g.item_id = i.item_id "
+  			+ "JOIN student_enrolls_course sec ON s.student_id = sec.student_id "
   			+ "JOIN category cat ON i.category_id = cat.category_id "
-  			+ "JOIN course c ON cat.course_id = cat.category_id "
-			+ "JOIN student_enrolls_course sec ON c.course_id = sec.course_id "
-			+ "JOIN student s ON sec.student_id = s.student_id "
-			+ "JOIN student ON g.student_id = s.student_id "
+  			+ "JOIN course c ON cat.course_id = c.course_id "
+  			+ "JOIN student_enrolls_course ON c.course_id = sec.course_id "
   			+ "WHERE c.course_id = ? "
-			+ "AND s.student_username = ? "
-  			+ "ORDER BY cat.category_id";
+  			+ "AND s.student_username = ? "
+  			+ "GROUP BY i.item_name, i.item_description, cat.category_name, i.item_point_value, g.grade_score "
+  			+ "ORDER BY cat.category_name";
     	
     	try (PreparedStatement stmt = db.prepareStatement(query)) {
     		stmt.setInt(1, selectedClassID);
     		stmt.setString(2, username);
     		
     		try (ResultSet rs = stmt.executeQuery()) {
-    			System.out.println("GRADES:\n");
+    			System.out.println("Grades for: " + username + "\n");
+    			System.out.format("%-20s%-20s%-20s%-20s%-20s\n", "item_name", "item_description", 
+    					          "category_name", "item_point_value", "grade_score");
     			
     			while (rs.next()) {
     				String item_name = rs.getString("item_name");
@@ -525,7 +528,7 @@ public class GradeBookShell {
     				String category_name = rs.getString("category_name");
     				int item_point_value = rs.getInt("item_point_value");
     				int grade_score = rs.getInt("grade_score");
-    				System.out.format("%-15s%-15s%-15s%-15d%-15d\n", item_name, item_description, category_name, item_point_value, grade_score);
+    				System.out.format("%-20s%-20s%-20s%-20d%-20d\n", item_name, item_description, category_name, item_point_value, grade_score);
     			}
     			
     		}
