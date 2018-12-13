@@ -581,6 +581,7 @@ public class GradeBookShell {
     					updt.setInt(3, student_id);
     					    					
     					updt.executeUpdate();
+    					System.out.println("Grade updated.\n");
     					return;
     				}
     				
@@ -594,19 +595,14 @@ public class GradeBookShell {
     					  "SELECT item_id "
     					+ "FROM item "
     					+ "WHERE item_name = ? ";
-    				
-    				System.out.println("CHECK1");
-    				
+    				    				
     				try (PreparedStatement itemIDStmt = db.prepareStatement(qryItemID)) {
     					itemIDStmt.setString(1, itemname);
-    					System.out.println("CHECK2");
     					
     					try (ResultSet itemRS = itemIDStmt.executeQuery()) {
     						
-    						System.out.println("CHECK3");
     						if (itemRS.next()) {
-    							System.out.println("CHECK4");
-    							item_id = rs.getInt("item_id");
+    							item_id = itemRS.getInt("item_id");
     						} else {
     							System.out.println("No item with the provided item name exists in the database.");
     							return;
@@ -625,7 +621,7 @@ public class GradeBookShell {
       					try (ResultSet studentRS = studentIDStmt.executeQuery()) {
       						
       						if (studentRS.next()) {
-      							student_id = rs.getInt("student_id");
+      							student_id = studentRS.getInt("student_id");
       						} else {
       							System.out.println("No student with the provided username exists in the database.");
       							return;
@@ -641,6 +637,8 @@ public class GradeBookShell {
     					gradeStmt.setInt(1, points);
     					gradeStmt.setInt(2, item_id);
     					gradeStmt.setInt(3, student_id);
+    					gradeStmt.execute();
+    					System.out.println("Grade added.\n");
     				}
     				
     			}
