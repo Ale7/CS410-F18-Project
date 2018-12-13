@@ -1,6 +1,11 @@
 # CS410-F18-Project
 Java application for managing grades in a class.
 
+**Authors:**
+
+- Alec Wooding
+- Brandon Barker
+
 **Files:**
 
 - CS 410 F18 Project.pdf - Project specification
