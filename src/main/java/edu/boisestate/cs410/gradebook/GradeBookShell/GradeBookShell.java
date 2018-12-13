@@ -519,8 +519,15 @@ public class GradeBookShell {
     		
     		try (ResultSet rs = stmt.executeQuery()) {
     			System.out.println("Grades for: " + username + "\n");
-    			System.out.format("%-20s%-20s%-20s%-20s%-20s\n", "item_name", "item_description", 
+    			System.out.format("%-20s%-20s%-20s%-20s%-20s\n\n", "item_name", "item_description", 
     					          "category_name", "item_point_value", "grade_score");
+    			
+    			String cat_name = "";
+    			int i = 0;
+    			int cat_sub_value = 0;
+    			int cat_sub_score = 0;
+    			int cat_total_value = 0;
+    			int cat_total_score = 0;
     			
     			while (rs.next()) {
     				String item_name = rs.getString("item_name");
@@ -528,8 +535,32 @@ public class GradeBookShell {
     				String category_name = rs.getString("category_name");
     				int item_point_value = rs.getInt("item_point_value");
     				int grade_score = rs.getInt("grade_score");
-    				System.out.format("%-20s%-20s%-20s%-20d%-20d\n", item_name, item_description, category_name, item_point_value, grade_score);
-    			}
+    				
+    				if (!cat_name.equals(category_name) && i != 0) {
+    					System.out.println(cat_name + " grade: " + cat_sub_score + "/" + cat_sub_value + "\n");
+    					cat_total_value += cat_sub_value;
+    					cat_total_score += cat_sub_score;
+    					cat_sub_value = 0;
+    					cat_sub_score = 0;
+    					cat_sub_value += item_point_value;
+        				cat_sub_score += grade_score;
+    					System.out.format("%-20s%-20s%-20s%-20d%-20d\n", item_name, item_description, category_name, item_point_value, grade_score);
+    				} else {
+    					cat_sub_value += item_point_value;
+        				cat_sub_score += grade_score;
+        				System.out.format("%-20s%-20s%-20s%-20d%-20d\n", item_name, item_description, category_name, item_point_value, grade_score);
+    					if (rs.isLast()) {
+    						System.out.println(cat_name + " grade: " + cat_sub_score + "/" + cat_sub_value + "\n");
+    						cat_total_value += cat_sub_value;
+        					cat_total_score += cat_sub_score;
+    					}
+    				}
+    		    				
+    				cat_name = category_name;
+    				i++;
+       			}
+    			
+    			System.out.println("OVERALL GRADE: " + cat_total_score + "/" + cat_total_value + "\n");
     			
     		}
     		
