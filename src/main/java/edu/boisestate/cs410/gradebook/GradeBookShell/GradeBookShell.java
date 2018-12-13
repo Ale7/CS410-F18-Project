@@ -423,7 +423,7 @@ public class GradeBookShell {
     @Command
     public void showStudents() throws SQLException
     {    	
-    	
+    	//Example: show-students
     	String query =
   			  "SELECT s.student_id, s.student_username, s.student_name "
   			+ "FROM student s "
@@ -561,6 +561,58 @@ public class GradeBookShell {
        			}
     			
     			System.out.println("OVERALL GRADE: " + cat_total_score + "/" + cat_total_value + "\n");
+    			
+    		}
+    		
+    	}
+    	
+    }
+    
+    @Command
+    public void gradebook() throws SQLException
+    { 
+    	//Example: gradebook
+    	String query =
+  			  "SELECT s.student_id, s.student_username, s.student_name, i.item_point_value, g.grade_score "
+  			+ "FROM grade g "
+  		  	+ "JOIN student s ON g.student_id = s.student_id "
+  		  	+ "JOIN item i ON g.item_id = i.item_id "
+  		  	+ "JOIN student_enrolls_course sec ON s.student_id = sec.student_id "
+  		  	+ "JOIN category cat ON i.category_id = cat.category_id "
+  		  	+ "JOIN course c ON cat.course_id = c.course_id "
+  		  	+ "JOIN student_enrolls_course ON c.course_id = sec.course_id "
+  		  	+ "WHERE c.course_id = ? "
+  			+ "GROUP BY s.student_id, s.student_username, s.student_name, i.item_point_value, g.grade_score "
+  			+ "ORDER BY s.student_id";
+    	
+    	try (PreparedStatement stmt = db.prepareStatement(query)) {
+    		stmt.setInt(1, selectedClassID);
+    		
+    		try (ResultSet rs = stmt.executeQuery()) {
+    			System.out.println("GRADEBOOK:\n");
+    			System.out.format("%-20s%-20s%-20s\n", "student_id", "student_username", 
+				          "student_name", "class_grade");
+    			
+    			int stud_id = 0;
+    			int i = 0;
+    			int stud_total_value = 0;
+    			int stud_total_score = 0;
+    			
+    			while (rs.next()) {
+    				int student_id = rs.getInt("student_id");
+    				String student_username = rs.getString("student_username");
+    				String student_name = rs.getString("student_name");
+    				int item_point_value = rs.getInt("item_point_value");
+    				int grade_score = rs.getInt("grade_score");
+    				
+    				if ((stud_id != student_id) && (i != 0)) {
+    					stud_total_value += item_point_value;
+    					stud_total_score += grade_score;
+    				}
+    				System.out.format("%-20d%-20s%-20s", student_id, student_username, student_name);
+    				System.out.println(stud_total_score + "/" + stud_total_value + "\n");
+    				i++;
+       			}
     			
     		}
     		
